@@ -1,0 +1,192 @@
+#include <iostream>
+#include <fstream>
+#include <chrono>
+#include <thread>
+#include <random>
+#include <cstring>
+
+using namespace std; 
+using namespace chrono;
+using namespace this_thread;
+
+int cont = 1 ; 
+
+int  GenerateBtw (int a, int b) {
+    return a + (rand() % b);
+}
+
+class CC {
+public :
+    char Name[10], Surname[10];
+    void getCCnr(int CC) { CCNr= CC ; }
+    void getCCnr2(int CC) { CCNr2 = CC; }
+    void getCCnr3(int CC) { CCNr3 = CC; }
+    void getCCnr4(int CC) { CCNr4 = CC; }
+    void getCCV(int CcV) { CCV = CcV; }
+    void getExpM(int Mexp) { Mexp = ExpM; }
+    void getExpY(int Yexp) { Yexp = ExpY; }
+    int showCCnr1() { return CCNr; }
+    int showCCnr2() { return CCNr2; }
+    int showCCnr3() { return CCNr3; }
+    int showCCnr4() { return CCNr4; }
+    int showCCV() { return CCV; }
+    int showExpM() { return ExpM; }
+    int showExpY() { return ExpY; }
+    char* showUser() { return Username; }
+    char* showPass() { return Password; }
+    void getUser(char u[12]) { strcpy_s(Username, u); }
+    void getPass(char u[12]) { strcpy_s(Password, u); }
+private:
+    int CCNr , CCNr2 , CCNr3 , CCNr4 , CCV, ExpM, ExpY;
+    char Username[12];
+    char Password[12];
+}CreditCard[100];
+
+
+bool VerifUser(char a[] ) {
+    for (int i = 1; i <= cont; i++)
+        if ( strcmp( a , CreditCard[cont].showUser()) == 1 )
+            return false; 
+    return true;
+}
+
+int VerifUserFULL( char b[] ) {
+    if (VerifUser(b) == false) {
+        cout << "\nUSERNAME ALREADY IN USE , CHOOSE ANOTHER ONE : "; char newuser[12]; cin >> newuser;
+        VerifUserFULL(newuser);
+    }
+    return 1;
+}
+
+void Case1() {
+    system("CLS");
+    cout << "\n\nPlease the following information : \n";
+    sleep_for(milliseconds(20));
+    cout << "Name : "; char Namedemo[10]; cin >> Namedemo;
+    sleep_for(milliseconds(10)); cout << " Nice name :)"; sleep_for(milliseconds(10));
+    system("CLS"); cout << " \n\n\n Surname : "; char Surnamedemo[10]; cin >> Surnamedemo; sleep_for(milliseconds(8)); system("CLS");
+    cout << "\n\n\n Please choose a username for the account : "; char userdemo[12]; cin >> userdemo;
+    system("CLS"); strcpy_s(userdemo, CreditCard[cont].showUser());
+    cout << "\n\n\n Please choose a password for the account : "; char passdemo[12]; cin >> passdemo;
+    system("CLS"); strcpy_s(passdemo, CreditCard[cont].showPass());
+    cout << " ACCOUNT CREATED "; sleep_for(milliseconds(20)); cout << "  Credit Card generating... ";  sleep_for(milliseconds(50)); system("CLS");
+    cout << " CREDIT CARD GENERATED "; sleep_for(seconds(1));
+    int generated_CCNR1 = GenerateBtw(1000, 9999);
+    int generated_CCNR2 = GenerateBtw(1000, 9999);
+    int generated_CCNR3 = GenerateBtw(1000, 9999);
+    int generated_CCNR4 = GenerateBtw(1000, 9999);
+    cout << "\n\n CREDIT CARD NUMBER : " << generated_CCNR1 << " " << generated_CCNR2 << " " << generated_CCNR3 << " " << generated_CCNR4;
+    CreditCard[cont].getCCnr(generated_CCNR1);
+    CreditCard[cont].getCCnr2(generated_CCNR2);
+    CreditCard[cont].getCCnr3(generated_CCNR3);
+    CreditCard[cont].getCCnr4(generated_CCNR4);
+    int generated_CVV = GenerateBtw(100, 999);
+    cout << "\n CVV : " << generated_CVV; CreditCard[cont].getCCV(generated_CVV);
+    int generated_M = GenerateBtw(1,12), generated_Y = GenerateBtw(24,29);
+    cout << "\n Expiration date : " << generated_M << " / " << generated_Y; CreditCard[cont].getExpM(generated_M); CreditCard[cont].getExpY(generated_Y);
+    cont++;
+    sleep_for(seconds(5));
+}
+
+bool FindUser(char x[12]) {
+    for (int i = 1; i <= cont; i++)
+        if (strcmp(x, CreditCard[i].showUser()) == 1) {
+            return true;
+        }
+    return false;
+}
+
+int FindUserPas(char x[12]) {
+    for (int i = 1; i <= cont; i++)
+        if (strcmp(x, CreditCard[i].showUser()) == 1)
+            return i;
+}
+
+void Case2() {
+    system("CLS");
+    cout << "Enter the USERNAME of the account : "; char demouser[12]; cin >> demouser;
+    if (FindUser(demouser) == true) {
+        cout << "USERNAME FOUND "; sleep_for(milliseconds(30)); cout << "\nEnter your Password : "; char Pass[12]; cin >> Pass;
+        if (strcmp(CreditCard[FindUserPas(demouser)].showPass(), Pass) == 1) {
+            sleep_for(milliseconds(30)); cout << "\nPASSWPRD CONFIRMED"; sleep_for(milliseconds(50)); system("CLS") ; 
+            cout << "\nYour credit card information is this :\nCard Number : " << CreditCard[FindUserPas(demouser)].showCCnr1() << " " << CreditCard[FindUserPas(demouser)].showCCnr2()<< " " << CreditCard[FindUserPas(demouser)].showCCnr3() << " " << CreditCard[FindUserPas(demouser)].showCCnr4() << "\nCCV : " << CreditCard[FindUserPas(demouser)].showCCV();
+            cout << "\nExpire Date : " << CreditCard[FindUserPas(demouser)].showExpM() << " / " << CreditCard[FindUserPas(demouser)].showExpY(); 
+        }
+        else {
+            cout << "\nINCORRECT PASSWORD "; sleep_for(milliseconds(30));
+            Case2();
+        }
+    }
+    else {
+        cout << "INCORRECT USERNAME "; sleep_for(milliseconds(30));
+        Case2();
+    }
+}
+
+void Case3() {
+    system("CLS");
+    cout << "Enter the USERNAME of the account : "; char demouser[12]; cin >> demouser;
+    if (FindUser(demouser) == true) {
+        cout << "USERNAME FOUND "; sleep_for(milliseconds(30)); cout << "\nEnter your Password : "; char Pass[12]; cin >> Pass;
+        if (strcmp(CreditCard[FindUserPas(demouser)].showPass(), Pass) == 1) {
+            cout << "\nARE YOU SURE YOU WANT YOUR ACCOUNT DELETED ? (Y/N) "; char decision; cin >> decision;
+            switch (decision) {
+            case 'Y' :
+                for (int i = FindUserPas(demouser) + 1; i <= cont ; i++) {
+                    strcpy_s(CreditCard[i].Name, CreditCard[i+1].Name);
+                    strcpy_s(CreditCard[i].Surname, CreditCard[i+1].Surname);
+                    CreditCard[i].getUser(CreditCard[i + 1].showUser());
+                    CreditCard[i].getPass(CreditCard[i + 1].showPass());
+                    CreditCard[i].getCCnr(CreditCard[i + 1].showCCnr1());
+                    CreditCard[i].getCCnr(CreditCard[i + 1].showCCnr2());
+                    CreditCard[i].getCCnr(CreditCard[i + 1].showCCnr3());
+                    CreditCard[i].getCCnr(CreditCard[i + 1].showCCnr4());
+                    CreditCard[i].getCCV(CreditCard[i + 1].showCCV());
+                    CreditCard[i].getExpM(CreditCard[i + 1].showExpM());
+                    CreditCard[i].getExpY(CreditCard[i + 1].showExpY());
+                }
+            case 'N' :
+                Case3();
+            }
+        }
+        else {
+            cout << "\nINCORRECT PASSWORD "; sleep_for(milliseconds(30)); 
+            Case2();
+        }
+    }
+    else {
+        cout << "INCORRECT USERNAME "; sleep_for(milliseconds(30));
+        Case2();
+    }
+}
+
+void Case4() {
+    system("CLS");
+    cout << "THX FOR YOUR INTEREST < SEE U NEXT TIME !! "; 
+    return;
+}
+
+void MainMenu() {
+    cout << "\n\n            WELCOME ";
+    cout << "\n\nPlease choose an option : \n1.Create a Credit Card\n2.Show Credit Card Info\n3.Delete Credit Card from system\n4.Exit\n\nPlease type your choice (1-4) : ";
+    int a; cin >> a;
+    switch (a) {
+    case 1:
+        Case1();
+        MainMenu();
+    case 2:
+        Case2();
+        MainMenu();
+    case 3 :
+        Case3();
+        MainMenu();
+    case 4 : 
+        Case4();
+    }
+}
+
+
+int main() {
+    MainMenu();
+    return 0;
+}
